@@ -154,13 +154,16 @@ async function handleSubmit(e) {
     const formContent = document.getElementById('formContent');
     const formSuccess = document.getElementById('formSuccess');
     
+    // Собираем данные
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
     
     try {
+        // Показываем состояние загрузки
         submitBtn.disabled = true;
         submitBtn.innerHTML = 'Отправка...';
         
+        // Отправляем на сервер
         const response = await fetch('/api/send-to-telegram', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -170,11 +173,13 @@ async function handleSubmit(e) {
         const result = await response.json();
         
         if (result.success) {
+            // ✅ Успех: показываем сообщение
             formContent.style.display = 'none';
             formSuccess.classList.add('show');
             form.reset();
             console.log('✅ Заявка успешно отправлена');
         } else {
+            // ❌ Ошибка от сервера
             throw new Error(result.error || 'Ошибка отправки');
         }
         
@@ -182,6 +187,7 @@ async function handleSubmit(e) {
         console.error('🚨 Ошибка:', error);
         alert('Не удалось отправить заявку. Проверьте соединение и попробуйте ещё раз.');
     } finally {
+        // Возвращаем кнопку в исходное состояние
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnText;
     }
