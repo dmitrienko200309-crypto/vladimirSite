@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeElite — Профессиональный трейдинг</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+
+        <!-- Navbar -->
+        <nav class="navbar" id="navbar">
+            <a href="#" class="nav-logo">
+                <div class="logo-icon">📈</div>
+                TradeElite
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#hero" onclick="closeMenu()">Главная</a></li>
+                <li><a href="#form" onclick="closeMenu()">Регистрация</a></li>
+                <li><a href="#results" onclick="closeMenu()">Результаты</a></li>
+                <li><a href="#reviews" onclick="closeMenu()">Отзывы</a></li>
+            </ul>
+            <a href="#form" class="nav-cta">Начать обучение</a>
+            <div class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+
+        <!-- HERO SECTION -->
+        <section class="hero" id="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1>
+                        Получи <span class="highlight-purple">бесплатный доступ</span><br>
+                        в закрытый трейдинг-клуб<br>
+                        и делай <span class="highlight-money">$1000-2000 в месяц</span><br>
+                        просто повторяя за мной
+                    </h1>
+
+                    <ul class="hero-bullets">
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span><strong>Готовые сделки</strong> от меня и моей команды</span>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span><strong>Без сложных стратегий</strong> и обучений</span>
+                        </li>
+                        <li>
+                            <span class="check-icon">✓</span>
+                            <span><strong>Только результат:</strong> 8 из 10 сделок закрываем в плюс</span>
+                        </li>
+                    </ul>
+
+                    <a href="#form" class="hero-btn">
+                        Присоединиться
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                    <p class="hero-sub-note">Вступление в команду только после отбора</p>
+                </div>
+
+                <div class="hero-image">
+                    <div class="teacher-photo-wrapper">
+                        <div class="teacher-photo-glow"></div>
+                        <img src="media/Vladimir.png" alt="Ваш учитель" class="teacher-photo">
+                        <div class="candlesticks">
+                            <div class="candle purple" style="height: 60px;"></div>
+                            <div class="candle green" style="height: 45px;"></div>
+                            <div class="candle purple" style="height: 75px;"></div>
+                            <div class="candle blue" style="height: 40px;"></div>
+                            <div class="candle tall-green" style="height: 90px;"></div>
+                        </div>
+                        <div class="candle-left">
+                            <div class="candle purple" style="height: 50px;"></div>
+                            <div class="candle green" style="height: 35px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <div class="scroll-mouse"></div>
+                <span>Листайте вниз</span>
+            </div>
+        </section>
+
+        <!-- FORM SECTION -->
+        <section class="form-section" id="form">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <div class="section-tag">Регистрация</div>
+                    <h2 class="section-title">Забронируйте своё место</h2>
+                    <p class="section-subtitle">
+                        Оставьте заявку, и мы свяжемся с вами в течение 24 часов для бесплатной консультации
+                    </p>
+                </div>
+                <div class="form-wrapper reveal reveal-delay-2">
+                    <div class="form-glow"></div>
+                    <div id="formContent">
+                        <h3 class="form-title">Записаться на обучение</h3>
+                        <p class="form-desc">Заполните форму — это бесплатно и ни к чему не обязывает</p>
+                        <form id="leadForm" onsubmit="handleSubmit(event)">
+                            <div class="form-group">
+                                <label for="name">Ваше имя</label>
+                                <input type="text" id="name" name="name" placeholder="Как к вам обращаться?" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Электронная почта</label>
+                                <input type="email" id="email" name="email" placeholder="example@mail.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="telegram">Telegram аккаунт</label>
+                                <input type="text" id="telegram" name="telegram" placeholder="@ваш_username или номер телефона" required>
+                            </div>
+                            <button type="submit" class="form-submit">Отправить заявку →</button>
+                        </form>
+                        <p class="form-note">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Ваши данные защищены и не будут переданы третьим лицам
+                        </p>
+                    </div>
+                    <div class="form-success" id="formSuccess">
+                        <div class="success-icon">✓</div>
+                        <h3>Заявка отправлена!</h3>
+                        <p>Мы свяжемся с вами в ближайшее время. Проверьте сообщения в Telegram.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESULTS SECTION -->
+        <section class="results-section" id="results">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <div class="section-tag">Результаты</div>
+                    <h2 class="section-title">Наши цифры говорят сами за себя</h2>
+                    <p class="section-subtitle">
+                        Статистика за последние 6 месяцев — только реальные результаты наших учеников
+                    </p>
+                </div>
+                <div class="results-grid">
+                    <div class="result-card reveal reveal-delay-1">
+                        <div class="result-icon">💰</div>
+                        <div class="result-value" data-count="847000" data-prefix="$">$0</div>
+                        <div class="result-label">Общая прибыль учеников</div>
+                    </div>
+                    <div class="result-card reveal reveal-delay-2">
+                        <div class="result-icon">📊</div>
+                        <div class="result-value" data-count="78" data-suffix="%">0%</div>
+                        <div class="result-label">Проходимость стратегии</div>
+                    </div>
+                    <div class="result-card reveal reveal-delay-3">
+                        <div class="result-icon">🎯</div>
+                        <div class="result-value" data-count="312">0</div>
+                        <div class="result-label">Учеников завершили курс</div>
+                    </div>
+                    <div class="result-card reveal reveal-delay-4">
+                        <div class="result-icon">⚡</div>
+                        <div class="result-value" data-count="4200" data-prefix="$">$0</div>
+                        <div class="result-label">Средний доход в месяц</div>
+                    </div>
+                </div>
+                <div class="performance-block reveal">
+                    <div class="performance-header">
+                        <h3>📈 Прибыль по месяцам</h3>
+                        <div class="performance-period">
+                            <button class="period-btn">3М</button>
+                            <button class="period-btn active">6М</button>
+                            <button class="period-btn">1Г</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="chartContainer"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REVIEWS SECTION -->
+        <section class="reviews-section" id="reviews">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <div class="section-tag">Отзывы</div>
+                    <h2 class="section-title">Что говорят наши ученики</h2>
+                    <p class="section-subtitle">
+                        Реальные отзывы людей, которые уже прошли обучение и начали зарабатывать
+                    </p>
+                </div>
+                <div class="reviews-grid">
+                    <div class="review-image-wrapper reveal reveal-delay-1"><img src="media/result1.jpg" alt="Отзыв 1" class="review-image"></div>
+                    <div class="review-image-wrapper reveal reveal-delay-2"><img src="media/result2.jpg" alt="Отзыв 2" class="review-image"></div>
+                    <div class="review-image-wrapper reveal reveal-delay-3"><img src="media/result3.jpg" alt="Отзыв 3" class="review-image"></div>
+                    <div class="review-image-wrapper reveal reveal-delay-4"><img src="media/result4.jpg" alt="Отзыв 4" class="review-image"></div>
+                    <div class="review-image-wrapper reveal reveal-delay-1"><img src="media/result5.jpg" alt="Отзыв 5" class="review-image"></div>
+                    <div class="review-image-wrapper reveal reveal-delay-2"><img src="media/result6.jpg" alt="Отзыв 6" class="review-image"></div>
+                    <div class="review-image-wrapper reveal reveal-delay-3"><img src="media/result7.jpg" alt="Отзыв 7" class="review-image"></div>
+                    <div class="review-image-wrapper reveal reveal-delay-4"><img src="media/result8.jpg" alt="Отзыв 8" class="review-image"></div>
+                    <div class="review-image-wrapper reveal reveal-delay-1"><img src="media/result9.jpg" alt="Отзыв 9" class="review-image"></div>
+                    <div class="review-image-wrapper reveal reveal-delay-2"><img src="media/result10.jpg" alt="Отзыв 10" class="review-image"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FINAL CTA -->
+        <section class="cta-section">
+            <div class="section-container">
+                <div class="cta-box reveal">
+                    <h2>Готовы изменить свою финансовую жизнь?</h2>
+                    <p>Присоединяйтесь к команде профессионалов и начните зарабатывать на рынке уже через 2 месяца</p>
+                    <a href="#form" class="btn-primary">Записаться на обучение →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">TradeElite</div>
+                <div class="footer-text">© 2025 TradeElite. Все права защищены.</div>
+                <div class="footer-links">
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Условия использования</a>
+                    <a href="#">Telegram</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- LIGHTBOX MODAL -->
+    <div class="lightbox-modal" id="lightboxModal">
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose">&times;</button>
+            <button class="lightbox-nav lightbox-prev" id="lightboxPrev">&#10094;</button>
+            <button class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</button>
+            <img src="" alt="Review" class="lightbox-image" id="lightboxImage">
+            <div class="lightbox-counter" id="lightboxCounter"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
