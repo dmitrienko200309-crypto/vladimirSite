@@ -10,9 +10,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('.'));
 
-// CORS
+// CORS настройки
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim());
-
 app.use((req, res, next) => {
     const origin = req.headers.origin;
     if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
@@ -24,14 +23,16 @@ app.use((req, res, next) => {
     next();
 });
 
-// Эндпоинт для приёма заявок
+// Эндпоинт отправки
 app.post('/api/send-to-telegram', async (req, res) => {
     const { name, email, telegram } = req.body;
 
+    // Проверка полей
     if (!name?.trim() || !email?.trim() || !telegram?.trim()) {
         return res.status(400).json({ error: 'Заполните все поля' });
     }
 
+    // Безопасность
     const escape = (str) => str.replace(/[&<>"']/g, s => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     })[s]);
@@ -47,16 +48,26 @@ app.post('/api/send-to-telegram', async (req, res) => {
     `.trim();
 
     try {
+        // Проверка наличия токена перед отправкой
+        const token = process.env.TELEGRAM_BOT_TOKEN;
+        const chatId = process.env.TELEGRAM_CHAT_ID;
+
+        if (!token || !chatId) {
+            console.error('❌ ОШИБКА: Переменные TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID не заданы!');
+            return res.status(500).json({ error: 'Ошибка конфигурации сервера' });
+        }
+
+        console.log('📤 Отправка заявки в Telegram...');
+        
         const tgRes = await fetch(
-            `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+            `https://api.telegram.org/bot${token}/sendMessage`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    chat_id: process.env.TELEGRAM_CHAT_ID,
+                    chat_id: chatId,
                     text: message,
-                    parse_mode: 'HTML',
-                    disable_web_page_preview: true
+                    parse_mode: 'HTML'
                 })
             }
         );
@@ -64,27 +75,18 @@ app.post('/api/send-to-telegram', async (req, res) => {
         const result = await tgRes.json();
 
         if (result.ok) {
-            console.log('✅ Заявка отправлена в Telegram:', { name, email });
+            console.log('✅ Заявка отправлена:', name);
             res.json({ success: true });
         } else {
-            console.error('❌ Telegram API error:', result);
-            throw new Error(result.description || 'Unknown Telegram error');
+            console.error('❌ Telegram API Error:', result.description);
+            res.status(500).json({ error: 'Ошибка Telegram: ' + result.description });
         }
     } catch (error) {
-        console.error('🚨 Ошибка отправки заявки:', error.message);
-        res.status(500).json({ error: 'Не удалось отправить заявку. Попробуйте позже.' });
+        console.error('🚨 Server Error:', error.message);
+        res.status(500).json({ error: 'Внутренняя ошибка сервера' });
     }
 });
 
-app.use('/api/*', (req, res) => {
-    res.status(404).json({ error: 'Endpoint not found' });
-});
-
 app.listen(PORT, () => {
-    console.log(`
-🚀 TradeElite Server запущен!
-📍 Локально: http://localhost:${PORT}
-📦 Telegram: ${process.env.TELEGRAM_BOT_TOKEN ? '✓ настроен' : '✗ НЕ настроен!'}
-🔐 Режим: ${process.env.NODE_ENV || 'development'}
-    `.trim());
+    console.log(`🚀 Server running on port ${PORT}`);
 });
