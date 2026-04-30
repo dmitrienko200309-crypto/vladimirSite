@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const fetch = require('node-fetch');
-const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,32 +24,40 @@ app.use((req, res, next) => {
 
 // Эндпоинт отправки
 app.post('/api/send-to-telegram', async (req, res) => {
+    // Принимаем phone вместо email
+    const { name, phone, telegram } = req.body;
 
-const { name, phone, telegram } = req.body;
+    // Проверка полей
+    if (!name?.trim() || !phone?.trim() || !telegram?.trim()) {
+        return res.status(400).json({ error: 'Заполните все поля' });
+    }
 
-if (!name?.trim() || !phone?.trim() || !telegram?.trim()) {
-    return res.status(400).json({ error: 'Заполните все поля' });
-}
+    // Простая функция для защиты от HTML, НЕ кодирует русские буквы
+    const escapeHtml = (text) => {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
 
-// ... (функция escape остаётся без изменений)
-
-const message = `
+    const message = `
 🔔 <b>НОВАЯ ЗАЯВКА</b>
 
- <b>Имя:</b> ${escape(name)}
-📞 <b>Телефон:</b> ${escape(phone)}
-✈️ <b>Telegram:</b> ${escape(telegram)}
+ <b>Имя:</b> ${escapeHtml(name)}
+📞 <b>Телефон:</b> ${escapeHtml(phone)}
+✈️ <b>Telegram:</b> ${escapeHtml(telegram)}
 
 📅 <i>${new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}</i>
-`.trim();
+    `.trim();
 
     try {
-        // Проверка наличия токена перед отправкой
         const token = process.env.TELEGRAM_BOT_TOKEN;
         const chatId = process.env.TELEGRAM_CHAT_ID;
 
         if (!token || !chatId) {
-            console.error('❌ ОШИБКА: Переменные TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID не заданы!');
+            console.error('❌ ОШИБКА: Переменные окружения не заданы!');
             return res.status(500).json({ error: 'Ошибка конфигурации сервера' });
         }
 
