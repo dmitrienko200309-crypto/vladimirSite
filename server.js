@@ -25,27 +25,24 @@ app.use((req, res, next) => {
 
 // Эндпоинт отправки
 app.post('/api/send-to-telegram', async (req, res) => {
-    const { name, email, telegram } = req.body;
 
-    // Проверка полей
-    if (!name?.trim() || !email?.trim() || !telegram?.trim()) {
-        return res.status(400).json({ error: 'Заполните все поля' });
-    }
+const { name, phone, telegram } = req.body;
 
-    // Безопасность
-    const escape = (str) => str.replace(/[&<>"']/g, s => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    })[s]);
+if (!name?.trim() || !phone?.trim() || !telegram?.trim()) {
+    return res.status(400).json({ error: 'Заполните все поля' });
+}
 
-    const message = `
+// ... (функция escape остаётся без изменений)
+
+const message = `
 🔔 <b>НОВАЯ ЗАЯВКА</b>
 
-👤 <b>Имя:</b> ${escape(name)}
-📧 <b>Email:</b> ${escape(email)}
+ <b>Имя:</b> ${escape(name)}
+📞 <b>Телефон:</b> ${escape(phone)}
 ✈️ <b>Telegram:</b> ${escape(telegram)}
 
 📅 <i>${new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}</i>
-    `.trim();
+`.trim();
 
     try {
         // Проверка наличия токена перед отправкой
