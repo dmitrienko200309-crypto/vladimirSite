@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('.'));
 
-// CORS настройки
+// CORS settings
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim());
 app.use((req, res, next) => {
     const origin = req.headers.origin;
@@ -22,17 +22,17 @@ app.use((req, res, next) => {
     next();
 });
 
-// Эндпоинт отправки
+// Send endpoint
 app.post('/api/send-to-telegram', async (req, res) => {
-    // Принимаем phone вместо email
+    // Accept phone instead of email
     const { name, phone, telegram } = req.body;
 
-    // Проверка полей
+    // Field validation
     if (!name?.trim() || !phone?.trim() || !telegram?.trim()) {
-        return res.status(400).json({ error: 'Заполните все поля' });
+        return res.status(400).json({ error: 'Please fill in all fields' });
     }
 
-    // Простая функция для защиты от HTML, НЕ кодирует русские буквы
+    // Simple HTML escape function (preserves non-Latin characters)
     const escapeHtml = (text) => {
         return text
             .replace(/&/g, "&amp;")
@@ -42,14 +42,15 @@ app.post('/api/send-to-telegram', async (req, res) => {
             .replace(/'/g, "&#039;");
     };
 
+    // Telegram message template (English)
     const message = `
-🔔 <b>НОВАЯ ЗАЯВКА</b>
+🔔 <b>NEW LEAD</b>
 
- <b>Имя:</b> ${escapeHtml(name)}
-📞 <b>Телефон:</b> ${escapeHtml(phone)}
+👤 <b>Name:</b> ${escapeHtml(name)}
+📞 <b>Phone:</b> ${escapeHtml(phone)}
 ✈️ <b>Telegram:</b> ${escapeHtml(telegram)}
 
-📅 <i>${new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}</i>
+📅 <i>${new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour12: false })}</i>
     `.trim();
 
     try {
@@ -57,11 +58,11 @@ app.post('/api/send-to-telegram', async (req, res) => {
         const chatId = process.env.TELEGRAM_CHAT_ID;
 
         if (!token || !chatId) {
-            console.error('❌ ОШИБКА: Переменные окружения не заданы!');
-            return res.status(500).json({ error: 'Ошибка конфигурации сервера' });
+            console.error('❌ ERROR: Environment variables not configured!');
+            return res.status(500).json({ error: 'Server configuration error' });
         }
 
-        console.log('📤 Отправка заявки в Telegram...');
+        console.log('📤 Sending lead to Telegram...');
         
         const tgRes = await fetch(
             `https://api.telegram.org/bot${token}/sendMessage`,
@@ -79,15 +80,15 @@ app.post('/api/send-to-telegram', async (req, res) => {
         const result = await tgRes.json();
 
         if (result.ok) {
-            console.log('✅ Заявка отправлена:', name);
+            console.log('✅ Lead sent successfully:', name);
             res.json({ success: true });
         } else {
             console.error('❌ Telegram API Error:', result.description);
-            res.status(500).json({ error: 'Ошибка Telegram: ' + result.description });
+            res.status(500).json({ error: 'Telegram error: ' + result.description });
         }
     } catch (error) {
         console.error('🚨 Server Error:', error.message);
-        res.status(500).json({ error: 'Внутренняя ошибка сервера' });
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
