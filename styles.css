@@ -436,6 +436,33 @@ section { padding: 100px 40px; }
 .form-success h3 { font-size: 20px; margin-bottom: 8px; }
 .form-success p { color: var(--text-secondary); font-size: 14px; }
 
+.telegram-join-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #0088cc, #0099e6);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+}
+
+.telegram-join-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
+    background: linear-gradient(135deg, #0099e6, #00aaff);
+}
+
+.telegram-join-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
 /* ===== RESULTS SECTION ===== */
 .results-section { position: relative; }
 .results-grid {
